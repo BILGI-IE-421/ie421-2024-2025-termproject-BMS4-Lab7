@@ -42,17 +42,17 @@ fig.update_layout(
 fig.show()
 import plotly.graph_objects as go
 
-# Original wage data
+
 wages = [
     55689, 72886, 75770, 634697, 1083951, 659293, 448489, 465671, 911932, 187898,
     379764, 206505, 1377762, 135172, 477843, 1732777
 ]
 
-# Normalize wages for "values"
+
 total_wages = sum(wages)
 normalized_values = [wage / total_wages for wage in wages]
 
-# Labels for sectors
+
 labels = [
     "Agriculture, forestry, fishing, and hunting",
     "Mining",
@@ -72,14 +72,14 @@ labels = [
     "Government"
 ]
 
-# Colors for the pie chart
+
 colors = [
     "#FFEDA0", "#FED976", "#FEB24C", "#FD8D3C", "#F03B20", "#BD0026",
     "#800026", "#FF6600", "#FF8C00", "#FFB732", "#FFBA5C", "#FF9440",
     "#FF7043", "#FF3D2F", "#E60019", "#990000"
 ]
 
-# Create the pie chart
+
 data = go.Pie(
     labels=labels,
     values=normalized_values,
@@ -104,5 +104,5 @@ layout = go.Layout(
 
 fig = go.Figure(data=[data], layout=layout)
 
-# Show the plot
+
 fig.show()
