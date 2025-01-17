@@ -12,9 +12,14 @@ except Exception as e:
     exit()
 
 # Sütun adlarını kontrol et
-if 'Required Educational Attaintment' not in df.columns:
-    print("Column 'Required Educational Attaintment' not found. Available columns:", df.columns)
+required_columns = ['Required Educational Attaintment', 'Related Indusrty']
+missing_columns = [col for col in required_columns if col not in df.columns]
+if missing_columns:
+    print(f"Missing columns: {missing_columns}. Available columns:", df.columns)
     exit()
+
+# "Related Indusrty" sütununda "Yok" yazan satırları silme
+df = df[df['Related Indusrty'] != "Yok"]
 
 # Eğitim seviyelerini 4 türe indirgeme kurallarını uygulama
 def map_educational_attainment(value):
@@ -38,10 +43,15 @@ def map_educational_attainment(value):
 # Güncellenmiş değerleri yeni bir sütuna yazma
 df['Fixed Required Educational Attaintment'] = df['Required Educational Attaintment'].apply(map_educational_attainment)
 
+# Eğitim seviyesi istatistiklerini sektör başına hesaplama
+industry_stats = df.groupby(['Related Indusrty', 'Fixed Required Educational Attaintment']).size().reset_index(name='Count')
+
 # Değişiklikleri aynı dosyada güncelleme
 try:
     with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
         df.to_excel(writer, sheet_name=sheet_name, index=False)
+        industry_stats.to_excel(writer, sheet_name="Industry Stats", index=False)
     print(f"Updated Excel file saved back to {file_path}")
 except Exception as e:
     print(f"Error updating the Excel file: {e}")
+
