@@ -1,0 +1,37 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+# Read the dataset
+file_path = "Dataset1.xlsx"
+sheet_name = "Sheet1"
+df = pd.read_excel(file_path, sheet_name=sheet_name)
+
+# Clean and filter data
+df = df[df['Related Indusrty'].notna()]  # Remove rows where 'Related Indusrty' is NaN
+
+# Group data by industry and educational attainment level
+grouped_data = df.groupby(['Related Indusrty', 'Fixed Required Educational Attaintment']).size().unstack(fill_value=0)
+
+# Normalize data to calculate percentages
+percentage_data = grouped_data.div(grouped_data.sum(axis=1), axis=0) * 100
+
+# Define custom colors
+custom_palette = ["#FFAF00", "#F46920", "#F53255", "#F857C1"]
+
+# Plot the normalized stacked bar chart
+fig, ax = plt.subplots(figsize=(15, 8))
+percentage_data.plot(kind='bar', stacked=True, ax=ax, color=custom_palette, edgecolor='none')
+ax.set_title("Percentage Distribution of Educational Attainment Levels by Industry", fontsize=16)
+ax.set_xlabel("Industry", fontsize=14)
+ax.set_ylabel("Percentage (%)", fontsize=14)
+ax.legend(title="Educational Attainment", fontsize=10, loc='upper left', bbox_to_anchor=(1, 1))  # Reposition legend outside the chart
+ax.set_facecolor("white")  # Set background to white
+ax.grid(axis='y', color='gray', linestyle='-', linewidth=0.5)  # Add horizontal white lines only
+ax.grid(axis='x', visible=False)  # Remove vertical gridlines
+ax.spines['top'].set_visible(False)  # Remove the top border
+ax.spines['right'].set_visible(False)  # Remove the right border
+plt.xticks(rotation=45, ha='right', fontsize=10)
+plt.tight_layout()
+
+# Display the chart
+plt.show()
