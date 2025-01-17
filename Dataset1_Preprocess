@@ -1,0 +1,47 @@
+import pandas as pd
+
+# Excel dosyasını yükle
+file_path = "Dataset1.xlsx"
+sheet_name = "Sheet1"
+
+# Excel dosyasını okuyarak DataFrame oluştur
+try:
+    df = pd.read_excel(file_path, sheet_name=sheet_name)
+except Exception as e:
+    print(f"Error reading the Excel file: {e}")
+    exit()
+
+# Sütun adlarını kontrol et
+if 'Required Educational Attaintment' not in df.columns:
+    print("Column 'Required Educational Attaintment' not found. Available columns:", df.columns)
+    exit()
+
+# Eğitim seviyelerini 4 türe indirgeme kurallarını uygulama
+def map_educational_attainment(value):
+    if value in [
+        "No formal educational credential",
+        "Postsecondary nondegree award",
+        "Some college, no degree",
+        "High school diploma or equivalent",
+        "Associate's degree",
+    ]:
+        return "High school diploma or less"
+    elif value in ["Bachelor's degree", "Associate's degree"]:
+        return "Bachelor's degree"
+    elif value == "Master's degree":
+        return "Master's degree"
+    elif value == "Doctoral or professional degree":
+        return "Doctoral or professional degree"
+    else:
+        return "Unknown"
+
+# Güncellenmiş değerleri yeni bir sütuna yazma
+df['Fixed Required Educational Attaintment'] = df['Required Educational Attaintment'].apply(map_educational_attainment)
+
+# Değişiklikleri yeni bir dosyaya kaydetme
+output_file_path = "Dataset1_updated.xlsx"
+try:
+    df.to_excel(output_file_path, sheet_name=sheet_name, index=False)
+    print(f"Updated Excel file saved as {output_file_path}")
+except Exception as e:
+    print(f"Error saving the updated Excel file: {e}")
