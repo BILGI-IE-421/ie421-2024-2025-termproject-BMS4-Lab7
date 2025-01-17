@@ -38,10 +38,10 @@ def map_educational_attainment(value):
 # Güncellenmiş değerleri yeni bir sütuna yazma
 df['Fixed Required Educational Attaintment'] = df['Required Educational Attaintment'].apply(map_educational_attainment)
 
-# Değişiklikleri yeni bir dosyaya kaydetme
-output_file_path = "Dataset1_updated.xlsx"
+# Değişiklikleri aynı dosyada güncelleme
 try:
-    df.to_excel(output_file_path, sheet_name=sheet_name, index=False)
-    print(f"Updated Excel file saved as {output_file_path}")
+    with pd.ExcelWriter(file_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+        df.to_excel(writer, sheet_name=sheet_name, index=False)
+    print(f"Updated Excel file saved back to {file_path}")
 except Exception as e:
-    print(f"Error saving the updated Excel file: {e}")
+    print(f"Error updating the Excel file: {e}")
